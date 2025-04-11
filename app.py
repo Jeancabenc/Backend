@@ -26,16 +26,19 @@ def get_fights():
 
     if response.status_code == 200:
         api_data = response.json()
-        # Mapea la estructura de datos a lo que espera el frontend
-        fights = [
-            {
-                "title": fight.get("title", "No Title"),
-                "date": fight.get("date", "No Date"),
-                "venue": fight.get("venue", "No Venue")
-            }
-            for fight in api_data.get("data", [])
-        ]
-        return jsonify(fights)
+        # Asegúrate de que api_data sea una lista antes de procesarla
+        if isinstance(api_data, list):
+            fights = [
+                {
+                    "title": fight.get("title", "No Title"),
+                    "date": fight.get("date", "No Date"),
+                    "venue": fight.get("venue", "No Venue")
+                }
+                for fight in api_data  # Itera directamente sobre la lista
+            ]
+            return jsonify(fights)
+        else:
+            return jsonify({"error": "La API devolvió un formato inesperado."}), 500
     else:
         return jsonify({"error": "No se pudieron obtener los datos de la API."}), 500
 
