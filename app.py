@@ -1,7 +1,9 @@
 from flask import Flask, jsonify
+from flask_cors import CORS  # Importamos CORS
 import requests
 
 app = Flask(__name__)
+CORS(app)  # Habilita CORS para todas las rutas
 
 @app.route('/')
 def get_fights():
@@ -22,11 +24,20 @@ def get_fights():
 
     response = requests.get(url, headers=headers, params=querystring)
 
-    # Asegurarse de que la respuesta es exitosa antes de procesar los datos
     if response.status_code == 200:
-        return jsonify(response.json())  # Retorna los datos en formato JSON
+        api_data = response.json()
+        # Mapea la estructura de datos a lo que espera el frontend
+        fights = [
+            {
+                "title": fight.get("title", "No Title"),
+                "date": fight.get("date", "No Date"),
+                "venue": fight.get("venue", "No Venue")
+            }
+            for fight in api_data.get("data", [])
+        ]
+        return jsonify(fights)
     else:
-        return jsonify({"error": "No se pudieron obtener los datos de la API."})
+        return jsonify({"error": "No se pudieron obtener los datos de la API."}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
