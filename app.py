@@ -1,7 +1,9 @@
 from flask import Flask, jsonify
+from flask_cors import CORS  # <-- agrega esto
 import requests
 
 app = Flask(__name__)
+CORS(app)  # <-- y esto
 
 @app.route('/')
 def get_fights():
