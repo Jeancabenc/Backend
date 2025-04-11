@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def get_fights():
-    url = "https://www.box.live/schedule/"
+    url = "https://box.live"
     response = requests.get(url)
     soup = BeautifulSoup(response.content, 'html.parser')
     
