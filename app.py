@@ -1,21 +1,24 @@
 from flask import Flask, jsonify
-from flask_cors import CORS  # <-- agrega esto
 import requests
 
 app = Flask(__name__)
-CORS(app)  # <-- y esto
 
-@app.route('/')
+@app.route('/api/fights')
 def get_fights():
-    url = "https://www.thesportsdb.com/api/v1/json/3/eventsnextleague.php?id=4424"
-    response = requests.get(url)
+    url = 'https://boxing-data-api.p.rapidapi.com/v1/events/schedule?days=30&past_hours=12&date_sort=ASC&page_num=1&page_size=25'
+    headers = {
+        'x-rapidapi-host': 'boxing-data-api.p.rapidapi.com',
+        'x-rapidapi-key': '70056ade0bmsh6870ea67c8dc851p167b8djsncbf0b288f605'
+    }
+    response = requests.get(url, headers=headers)
     data = response.json()
 
     fights = []
     for event in data.get('events', []):
         fights.append({
-            'boxers': event.get('strEvent'),
-            'date': f"{event.get('dateEvent')} {event.get('strTime') or ''}"
+            'title': event.get('title'),
+            'date': event.get('date'),
+            'venue': event.get('venue', 'Por confirmar')
         })
 
     return jsonify(fights)
