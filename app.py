@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 
 app = Flask(__name__)
 
-@app.route('/fights')
+@app.route('/')
 def get_fights():
     url = "https://www.box.live/schedule/"
     response = requests.get(url)
@@ -23,3 +23,6 @@ def get_fights():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000, debug=True)
